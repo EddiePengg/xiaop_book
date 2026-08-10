@@ -34,8 +34,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/books ./books
 
 USER nextjs
 
-EXPOSE 3020
-ENV PORT=3020
+EXPOSE 3000
+ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "server.js"]
