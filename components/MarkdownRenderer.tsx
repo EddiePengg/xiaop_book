@@ -26,8 +26,8 @@ function CodeBlock({ children }: { children: React.ReactNode }) {
 
   const copy = () => {
     // Extract text from the <code> child
-    const el = (children as React.ReactElement)?.props?.children;
-    const text = typeof el === "string" ? el : "";
+    const el = children as React.ReactElement<{ children?: React.ReactNode }>;
+    const text = typeof el?.props?.children === "string" ? el.props.children : "";
     if (text) {
       navigator.clipboard?.writeText(text).then(() => {
         setCopied(true);
