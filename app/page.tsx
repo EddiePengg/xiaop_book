@@ -41,7 +41,7 @@ function BookCard({ book }: { book: Book }) {
         <h3 className="book-card-title">{book.title}</h3>
         <p className="book-card-author">{book.author}</p>
         <div className="book-card-meta">
-          {book.rating != null && (
+          {book.rating != null && typeof book.rating === "number" && (
             <span className={`book-card-rating ${ratingClass(book.rating)}`}>
               ⭐ {book.rating.toFixed(1)}
             </span>
