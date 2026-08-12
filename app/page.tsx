@@ -6,6 +6,12 @@ function ratingClass(r: number): string {
   return "rating-low";
 }
 
+function safeRating(r: unknown): number | null {
+  if (r == null) return null;
+  const n = typeof r === "string" ? parseFloat(r) : typeof r === "number" ? r : NaN;
+  return isNaN(n) ? null : n;
+}
+
 export default function HomePage() {
   const books = getAllBooks();
 
@@ -41,11 +47,14 @@ function BookCard({ book }: { book: Book }) {
         <h3 className="book-card-title">{book.title}</h3>
         <p className="book-card-author">{book.author}</p>
         <div className="book-card-meta">
-          {book.rating != null && typeof book.rating === "number" && (
-            <span className={`book-card-rating ${ratingClass(book.rating)}`}>
-              ⭐ {book.rating.toFixed(1)}
-            </span>
-          )}
+          {(() => {
+            const r = safeRating(book.rating);
+            return r != null ? (
+              <span className={`book-card-rating ${ratingClass(r)}`}>
+                ⭐ {r.toFixed(1)}
+              </span>
+            ) : null;
+          })()}
           <span className="book-card-date">{book.date}</span>
           {book.hasPodcast && <span className="book-card-podcast">🎙 播客</span>}
         </div>

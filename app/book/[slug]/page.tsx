@@ -13,6 +13,12 @@ function ratingClass(r: number): string {
   return "rating-low";
 }
 
+function safeRating(r: unknown): number | null {
+  if (r == null) return null;
+  const n = typeof r === "string" ? parseFloat(r) : typeof r === "number" ? r : NaN;
+  return isNaN(n) ? null : n;
+}
+
 export default async function BookDetailPage({
   params,
 }: {
@@ -36,11 +42,14 @@ export default async function BookDetailPage({
           <h1 className="detail-title">{book.title}</h1>
           <p className="detail-author">{book.author}</p>
           <div className="detail-meta-row">
-            {book.rating != null && (
-              <span className={`detail-rating ${ratingClass(book.rating)}`}>
-                ⭐ {book.rating.toFixed(1)}
-              </span>
-            )}
+            {(() => {
+              const r = safeRating(book.rating);
+              return r != null ? (
+                <span className={`detail-rating ${ratingClass(r)}`}>
+                  ⭐ {r.toFixed(1)}
+                </span>
+              ) : null;
+            })()}
             <span className="detail-date">📅 {book.date}</span>
           </div>
           {book.tags && book.tags.length > 0 && (
