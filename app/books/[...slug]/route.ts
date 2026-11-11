@@ -11,6 +11,7 @@ const MIME: Record<string, string> = {
   ".gif": "image/gif",
   ".webp": "image/webp",
   ".mp3": "audio/mpeg",
+  ".m4a": "audio/mp4",
   ".mp4": "video/mp4",
   ".md": "text/markdown; charset=utf-8",
   ".json": "application/json; charset=utf-8",

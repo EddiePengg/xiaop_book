@@ -85,9 +85,14 @@ function readBook(slug: string): Book | null {
   const coverFsPath = path.join(dir, "cover.jpg");
   const hasCover = fs.existsSync(coverFsPath);
 
-  // podcast
-  const podcastFsPath = path.join(dir, "podcast.mp3");
-  const hasPodcast = fs.existsSync(podcastFsPath);
+  // podcast — 兼容 .mp3 和 .m4a (NotebookLM 默认输出 .m4a)
+  const podcastMp3Path = path.join(dir, "podcast.mp3");
+  const podcastM4aPath = path.join(dir, "podcast.m4a");
+  const podcastFsPath = fs.existsSync(podcastMp3Path) ? podcastMp3Path
+                       : fs.existsSync(podcastM4aPath) ? podcastM4aPath
+                       : null;
+  const hasPodcast = podcastFsPath !== null;
+  const podcastExt = podcastFsPath ? path.extname(podcastFsPath).slice(1) : "mp3";
 
   return {
     ...meta,
@@ -96,6 +101,6 @@ function readBook(slug: string): Book | null {
     hasCover,
     hasPodcast,
     coverUrl: hasCover ? `/books/${slug}/cover.jpg` : undefined,
-    podcastUrl: hasPodcast ? `/books/${slug}/podcast.mp3` : undefined,
+    podcastUrl: hasPodcast ? `/books/${slug}/podcast.${podcastExt}` : undefined,
   };
 }

@@ -73,6 +73,9 @@ export default function AudioPlayer({ src, title }: AudioPlayerProps) {
 
   const pct = duration > 0 ? (current / duration) * 100 : 0;
 
+  const ext = src.split(".").pop() || "mp3";
+  const downloadName = `${(title || "podcast").replace(/[\\/:*?"<>|]/g, "_")}.${ext}`;
+
   return (
     <div className="audio-player">
       <audio ref={audioRef} src={src} preload="metadata" />
@@ -102,6 +105,15 @@ export default function AudioPlayer({ src, title }: AudioPlayerProps) {
         <button className="ap-speed" onClick={changeSpeed} aria-label="倍速">
           {speed}x
         </button>
+        <a
+          className="ap-download"
+          href={src}
+          download={downloadName}
+          aria-label="下载音频"
+          title="下载音频"
+        >
+          ⬇
+        </a>
       </div>
     </div>
   );

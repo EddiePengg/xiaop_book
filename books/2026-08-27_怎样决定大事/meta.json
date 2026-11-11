@@ -3,9 +3,17 @@
   "author": "劳伦斯·艾利森 / 尼尔·肖特兰",
   "rating": 7.2,
   "date": "2026-08-27",
-  "podcast_title": "",
-  "tags": ["决策科学", "STAR模型", "心理学", "军事决策", "自我管理"],
+  "podcast_title": "谁在操纵你的选择",
+  "tags": [
+    "决策科学",
+    "STAR模型",
+    "心理学",
+    "军事决策",
+    "自我管理"
+  ],
   "isbn": "9787573916853",
   "publisher": "浙江科学技术出版社",
-  "year": 2025
+  "year": 2025,
+  "podcast_duration": "",
+  "podcast_file": "podcast.m4a"
 }

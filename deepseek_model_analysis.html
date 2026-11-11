@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepSeek 4.1 Flash 与 V4 Pro 深度解析</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #666;
+    --accent: #0d9488;
+    --soft: #f4f7f0;
+    --bg: #faf8f5;
+    --card: #ffffff;
+    --border: #e2e2e2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 1.8em; margin-bottom: 0.2em; }
+  h2 { font-size: 1.3em; margin-top: 2em; color: var(--accent); }
+  h3 { font-size: 1.05em; margin-top: 1.5em; }
+  .meta { color: var(--muted); margin-bottom: 1em; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5em; margin-bottom: 1.5em; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.2em; }
+  .card + .card { margin-top: 0.5em; }
+  ul, ol { padding-left: 1.5em; }
+  code { background: #e6e8ec; padding: 0.1em 0.3em; border-radius: 4px; }
+  .source { font-size: 0.85em; color: var(--muted); margin-top: 1em; font-style: italic; }
+  .key-point { background: #eff6ff; border-left: 4px solid var(--accent); padding: 0.8em 1em; margin: 1em 0; border-radius: 4px; }
+  .callout { background: var(--soft); border: 1px solid var(--border); border-radius: 6px; padding: 1em; margin: 1em 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>DeepSeek 4.1 Flash 与 V4 Pro 深度解析</h1>
+<p class="meta">基于 2026 年 9 月前后公开报道及实测数据整理</p>
+
+<h2>一、核心结论</h2>
+
+<div class="key-point">
+<b>关键结论：Flash 系列定位"更便宜、参数更少、速度更快"，与 V4 Pro 并非直接替代关系。</b> V4 Pro 为 1.6T 参数 MoE 架构（正式版），Flash 则更注重经济性与高吞吐。官方 V4.1 Flash 实测跑 14 组任务比旧版 Flash 贵 36%，但仍优于旧版 Flash 在速度、多模态、视觉推理、Agent 能力上的表现。V4.1 Flash 是内部测试版（截止 2026-09-10），尚未发布正式参数数据，定价为内部价。
+</div>
+
+<h2>二、DeepSeek 模型家族梳理</h2>
+
+<div class="grid">
+  <div class="card">
+    <h3>V4 Flash</h3>
+    <p>2025 年初发布，内挂式多模态模型（外接视觉编码器 + 对齐器），纯文本底座。</p>
+    <p>2025 年 9 月降价：缓存命中输入单价砍 60%。</p>
+  </div>
+  <div class="card">
+    <h3>V4 Flash Vision-Exp</h3>
+    <p>2025 年 7 月 31 日发布，V4 Flash 内部增强版本，内挂式多模态。</p>
+    <p>外接视觉编码器与对齐器，非出厂原生多模态。</p>
+  </div>
+  <div class="card">
+    <h3>V4 Pro</h3>
+    <p>正式版，1.6T 参数，MoE 架构，多项测评超越 Fable 5。</p>
+    <p>大模型推理/评测场景，参数最高端型号。</p>
+  </div>
+  <div class="card">
+    <h3>V4.1 Flash</h3>
+    <p>内部测试版 <code>deepseek-v4.1-flash-expires-on-0910</code>，截止 2026-09-10 内测。</p>
+    <p>出厂原生多模态，新推理架构，更快吞吐。</p>
+  </div>
+</div>
+
+<h2>三、性能对比数据</h2>
+
+<h3>V4.1 Flash vs V4 Flash（同任务）— 技术报告</h3>
+<ul>
+  <li>单轮对话端到端：<b>0.8 秒</b>（思考 0.3s）</li>
+  <li>极端长文本吞吐：<b>420 Token/s</b></li>
+  <li>49k 超长上下文检索：<b>快 5.2×</b></li>
+  <li>SVG 代码生成：<b>快 6.0×</b></li>
+  <li>Manacher 回文算法：<b>快 4.6×</b></li>
+  <li>大型 SQL 生成优化：<b>快 5.0×</b></li>
+  <li>asyncio 异步架构重构：<b>快 3.9×</b></li>
+  <li>原生多模态：出厂即图文一体化输入输出（V4 Flash Vision-Exp 外挂式）</li>
+  <li>视觉理解：V4.1 约 5.7s 答图，V4 约 200s</li>
+</ul>
+
+<h3>V4.1 Flash vs V4 Flash — 实测（14 组任务）</h3>
+<ul>
+  <li>累计 Token：3 亿（V4.1 Flash 2485 次 API 请求）vs 旧 Flash</li>
+  <li>价格：<b>61.96 元 vs 45.47 元（V4）</b>，V4.1 Flash 贵 36%</li>
+  <li>生成速度：V4.1 ~284 Token/s，V4 ~97 Token/s（接近 3 倍）</li>
+  <li>端到端时间：旧 Flash 快，V4.1 在复杂任务上慢</li>
+  <li>价格已于 9 月 10 日降价：缓存命中输入单价砍 60%</li>
+</ul>
+
+<h2>四、官方声称 vs 实测对比</h2>
+
+<h3>V4.1 Flash 官方声明的核心点</h3>
+<ul>
+  <li>新模型结构 + 原生多模态支持</li>
+  <li>能力更强、速度更快、成本更低</li>
+  <li>原生图文一体化输入输出</li>
+  <li>官方主动提问：能否替代线上的 V4 Pro</li>
+</ul>
+
+<h3>V4.1 Flash 实测结果 vs 官方声称</h3>
+<ul>
+  <li>✓ 原生多模态：✔</li>
+  <li>✓ 速度更快：✔</li>
+  <li>成本更低：✘ 实测比旧 Flash 贵（但低于 V4 Pro 正式版）</li>
+  <li>能全面替代 V4 Pro：? 需自行评测</li>
+</ul>
+
+<h2>五、为什么听起来"Flash 完全超过 Pro"</h2>
+
+<div class="callout">
+<b>1. 并非参数超越</b>：Flash 参数少（V4 Flash Vision-Exp ~2.8B，V4 Pro 1.6T），Pro 参数更高，Flash 不可能"完全超过"Pro 的参数规模。
+<br><br>
+<b>2. 定位不同线</b>：Flash = 经济性/速度线；Pro = 高性能线。两者属于不同产品线。
+<br><br>
+<b>3. 官方自己提问</b>：V4.1 Flash 中间版本邀测问卷中有"能否全面替换线上的 V4 Pro"一题，答案需自行跑评测。
+<br><br>
+<b>4. 实测看场景</b>：V4.1 Flash 在速度、多模态、视觉推理、Agent 能力上领先，但长上下文、前后一致性、端到端复杂任务上未明显超越旧 Flash。
+</div>
+
+<h2>六、价格与成本信息</h2>
+
+<h3>价格现状</h3>
+<ul>
+  <li>DeepSeek 不公开定价体系</li>
+  <li>V4.1 Flash 实测消费：61.96 元（2485 次请求）</li>
+  <li>V4 对照消费：45.47 元</li>
+  <li>V4 Flash 降价后单价砍 60%（缓存命中输入）</li>
+  <li>9 月 10 日起 Flash 系列全面降价</li>
+</ul>
+
+<h3>Token 成本分析</h3>
+<ul>
+  <li>3 亿 Token 中，绝大多数是缓存命中（输入缓存命中率 ~98.9%）</li>
+  <li>V4 更爱单模型单会话跑；V4.1 Flash 倾向开多 Agent，增加 Token 消耗</li>
+</ul>
+
+<h2>七、总结</h2>
+
+<p>DeepSeek V4.1 Flash 是 2026 年 9 月内测版的中间版本，尚未发布正式版参数数据与评测报告。实测显示其在速度与多模态能力上超越旧版 Flash，但定价高于旧 Flash（因多 Agent 倾向增加成本）。Flash 系列定位更经济，V4 Pro 为高端生产线型号，两者非直接替代关系。"Flash 超越 Pro"的说法源自官方自身实测对比与主动调研问答。</p>
+
+<p class="source">本文数据来源于公开报道与实测文章：<code>36氪 V4.1 Flash 内测</code>、<code>凤凰网 DeepSeek V4.1 Flash 实测</code>、<code>DeepSeek V4 Pro 正式版</code>。</p>
+
+</div>
+</body>
+</html>
